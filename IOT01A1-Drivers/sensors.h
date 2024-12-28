@@ -54,12 +54,7 @@ typedef enum {
     XL_6_66_KHZ = 0x0a
 } LSM6DSLXLUpdateRate;
 
-typedef enum {
-    XL_2_G = 0x00,
-    XL_16_G = 0x01,
-    XL_4_G = 0x02,
-    XL_8_G = 0x03
-} LSM6DSLXLFullScale;
+typedef enum { XL_2_G = 0x00, XL_16_G = 0x01, XL_4_G = 0x02, XL_8_G = 0x03 } LSM6DSLXLFullScale;
 
 typedef enum {
     G_POWER_DOWN = 0x00,
@@ -75,12 +70,7 @@ typedef enum {
     G_6_66_KHZ = 0x0a
 } LSM6DSLGUpdateRate;
 
-typedef enum {
-    G_250_DPS = 0x00,
-    G_500_DPS = 0x01,
-    G_1000_DPS = 0x02,
-    G_2000_DPS = 0x03
-} LSM6DSLGFullScale;
+typedef enum { G_250_DPS = 0x00, G_500_DPS = 0x01, G_1000_DPS = 0x02, G_2000_DPS = 0x03 } LSM6DSLGFullScale;
 
 typedef struct {
     float x;
@@ -88,7 +78,8 @@ typedef struct {
     float z;
 } Vec3;
 
-void lsm6dsl_init(LSM6DSLXLUpdateRate accel_update_rate, LSM6DSLXLFullScale accel_full_scale, LSM6DSLGUpdateRate gyro_update_rate, LSM6DSLGFullScale gyro_full_scale);
+void lsm6dsl_init(LSM6DSLXLUpdateRate accel_update_rate, LSM6DSLXLFullScale accel_full_scale,
+                  LSM6DSLGUpdateRate gyro_update_rate, LSM6DSLGFullScale gyro_full_scale);
 Vec3 lsm6dsl_read_accel();
 Vec3 lsm6dsl_read_gyro();
 
@@ -103,12 +94,7 @@ typedef enum {
     LIS_80_HZ = 0x07
 } LIS3MDLUpdateRate;
 
-typedef enum {
-    LIS_4_GAUSS = 0x00,
-    LIS_8_GAUSS = 0x01,
-    LIS_12_GAUSS = 0x02,
-    LIS_16_GAUSS = 0x03
-} LIS3MDLFullScale;
+typedef enum { LIS_4_GAUSS = 0x00, LIS_8_GAUSS = 0x01, LIS_12_GAUSS = 0x02, LIS_16_GAUSS = 0x03 } LIS3MDLFullScale;
 
 void lis3mdl_init(LIS3MDLUpdateRate update_rate, LIS3MDLFullScale full_scale);
 Vec3 lis3mdl_read_mag();

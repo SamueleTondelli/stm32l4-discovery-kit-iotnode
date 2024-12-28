@@ -25,12 +25,12 @@ float lps22hb_read_press() {
     HAL_I2C_Mem_Read(&hi2c2, LPS22HB_ADDR, LPS22HB_PRESS_L, 1, &press_l, 1, 1);
     HAL_I2C_Mem_Read(&hi2c2, LPS22HB_ADDR, LPS22HB_PRESS_H, 1, &press_h, 1, 1);
 
-    uint32_t tmp = press_xl | ((uint32_t)press_l << 8) | ((uint32_t)press_h << 16);
+    uint32_t tmp = press_xl | ((uint32_t) press_l << 8) | ((uint32_t) press_h << 16);
     if (tmp & 0x00800000) { // 24 bits complement
         tmp |= 0xFF000000;
     }
-    int32_t raw = (int32_t)tmp;
-    return (float)raw / 4096.f;
+    int32_t raw = (int32_t) tmp;
+    return (float) raw / 4096.f;
 }
 
 float lps22hb_read_temp() {
@@ -42,8 +42,8 @@ float lps22hb_read_temp() {
     if (tmp & 0x00008000) { // 16 bits complement
         tmp |= 0xFFFF0000;
     }
-    int32_t raw = (int32_t)tmp;
-    return (float)raw / 100.f;
+    int32_t raw = (int32_t) tmp;
+    return (float) raw / 100.f;
 }
 
 #define HTS221_ADDR 0xbe
@@ -86,10 +86,10 @@ HTS221CalibrationMeaseures hts221_init(HTS221UpdateRate update_rate) {
 
     measeures.t0_degc = (t0_degc) >> 3; // division by 8
     measeures.t1_degc = (t1_degc) >> 3; // division by 8
-    measeures.t0_out = ((int16_t)t0_out_h << 8) | t0_out_l;
-    measeures.t1_out = ((int16_t)t1_out_h << 8) | t1_out_l;
-    measeures.t_m = (float)(measeures.t1_degc - measeures.t0_degc) / ((float)(measeures.t1_out - measeures.t0_out));
-    measeures.t_b = (float)measeures.t0_degc - measeures.t_m * (float)measeures.t0_out;
+    measeures.t0_out = ((int16_t) t0_out_h << 8) | t0_out_l;
+    measeures.t1_out = ((int16_t) t1_out_h << 8) | t1_out_l;
+    measeures.t_m = (float) (measeures.t1_degc - measeures.t0_degc) / ((float) (measeures.t1_out - measeures.t0_out));
+    measeures.t_b = (float) measeures.t0_degc - measeures.t_m * (float) measeures.t0_out;
 
     // humidity measurements
     uint8_t h0_rh, h1_rh, h0_out_l, h0_out_h, h1_out_l, h1_out_h;
@@ -100,38 +100,38 @@ HTS221CalibrationMeaseures hts221_init(HTS221UpdateRate update_rate) {
     HAL_I2C_Mem_Read(&hi2c2, HTS221_ADDR, HTS221_H1_OUT_L, 1, &h1_out_l, 1, 1);
     HAL_I2C_Mem_Read(&hi2c2, HTS221_ADDR, HTS221_H1_OUT_H, 1, &h1_out_h, 1, 1);
 
-    measeures.h0_rh = (uint16_t)h0_rh >> 1; // division by 2
-    measeures.h1_rh = (uint16_t)h1_rh >> 1; // division by 2
-    measeures.h0_out = ((int16_t)h0_out_h << 8) | h0_out_l;
-    measeures.h1_out = ((int16_t)h1_out_h << 8) | h1_out_l;
-    measeures.h_m = (float)(measeures.h1_rh - measeures.h0_rh) / ((float)(measeures.h1_out - measeures.h0_out));
-    measeures.h_b = (float)measeures.h0_rh - measeures.h_m * (float)measeures.h0_out;
+    measeures.h0_rh = (uint16_t) h0_rh >> 1; // division by 2
+    measeures.h1_rh = (uint16_t) h1_rh >> 1; // division by 2
+    measeures.h0_out = ((int16_t) h0_out_h << 8) | h0_out_l;
+    measeures.h1_out = ((int16_t) h1_out_h << 8) | h1_out_l;
+    measeures.h_m = (float) (measeures.h1_rh - measeures.h0_rh) / ((float) (measeures.h1_out - measeures.h0_out));
+    measeures.h_b = (float) measeures.h0_rh - measeures.h_m * (float) measeures.h0_out;
 
     return measeures;
 }
 
-float hts221_read_temp(const HTS221CalibrationMeaseures* measeures) {
+float hts221_read_temp(const HTS221CalibrationMeaseures *measeures) {
     uint8_t t_out_l, t_out_h;
     HAL_I2C_Mem_Read(&hi2c2, HTS221_ADDR, HTS221_T_OUT_L, 1, &t_out_l, 1, 1);
     HAL_I2C_Mem_Read(&hi2c2, HTS221_ADDR, HTS221_T_OUT_H, 1, &t_out_h, 1, 1);
-    uint32_t ut_out = ((uint32_t)t_out_h << 8) | t_out_l;
+    uint32_t ut_out = ((uint32_t) t_out_h << 8) | t_out_l;
     if (ut_out & 0x00008000) {
         ut_out |= 0xFFFF0000;
     }
-    int32_t t_out = (int32_t)ut_out;
-    return (float)t_out * measeures->t_m + measeures->t_b;
+    int32_t t_out = (int32_t) ut_out;
+    return (float) t_out * measeures->t_m + measeures->t_b;
 }
 
-float hts221_read_hum(const HTS221CalibrationMeaseures* measeures) {
+float hts221_read_hum(const HTS221CalibrationMeaseures *measeures) {
     uint8_t h_out_l, h_out_h;
     HAL_I2C_Mem_Read(&hi2c2, HTS221_ADDR, HTS221_H_OUT_L, 1, &h_out_l, 1, 1);
     HAL_I2C_Mem_Read(&hi2c2, HTS221_ADDR, HTS221_H_OUT_H, 1, &h_out_h, 1, 1);
-    uint32_t uh_out = ((uint32_t)h_out_h << 8) | h_out_h;
+    uint32_t uh_out = ((uint32_t) h_out_h << 8) | h_out_h;
     if (uh_out & 0x00008000) {
         uh_out |= 0xFFFF0000;
     }
-    int32_t h_out = (int32_t)uh_out;
-    return (float)h_out * measeures->h_m + measeures->h_b;
+    int32_t h_out = (int32_t) uh_out;
+    return (float) h_out * measeures->h_m + measeures->h_b;
 }
 
 #define LSM6DSL_ADDR 0xd4
@@ -150,7 +150,8 @@ float hts221_read_hum(const HTS221CalibrationMeaseures* measeures) {
 #define LSM6DSL_Z_L_XL 0x2c
 #define LSM6DSL_Z_H_XL 0x2d
 
-void lsm6dsl_init(LSM6DSLXLUpdateRate accel_update_rate, LSM6DSLXLFullScale accel_full_scale, LSM6DSLGUpdateRate gyro_update_rate, LSM6DSLGFullScale gyro_full_scale) {
+void lsm6dsl_init(LSM6DSLXLUpdateRate accel_update_rate, LSM6DSLXLFullScale accel_full_scale,
+                  LSM6DSLGUpdateRate gyro_update_rate, LSM6DSLGFullScale gyro_full_scale) {
     uint8_t xl_payload = (accel_update_rate << 4) | (accel_full_scale << 2);
     HAL_I2C_Mem_Write(&hi2c2, LSM6DSL_ADDR, LSM6DSL_CTRL1_XL, 1, &xl_payload, 1, 1);
     uint8_t g_payload = (gyro_update_rate << 4) | (gyro_full_scale << 2);
@@ -161,12 +162,12 @@ static float lsm6dsl_read_component(uint16_t l_addr, uint16_t h_addr, float scal
     uint8_t l, h;
     HAL_I2C_Mem_Read(&hi2c2, LSM6DSL_ADDR, l_addr, 1, &l, 1, 1);
     HAL_I2C_Mem_Read(&hi2c2, LSM6DSL_ADDR, h_addr, 1, &h, 1, 1);
-    uint32_t u_val = ((uint32_t)h << 8) | l;
+    uint32_t u_val = ((uint32_t) h << 8) | l;
     if (u_val & 0x00008000) {
         u_val |= 0xFFFF0000;
     }
-    int32_t i_val = (int32_t)u_val;
-    return (float)i_val * scale;
+    int32_t i_val = (int32_t) u_val;
+    return (float) i_val * scale;
 }
 
 Vec3 lsm6dsl_read_accel() {
@@ -193,9 +194,9 @@ Vec3 lsm6dsl_read_accel() {
 
     const float mg_to_ms2 = 9.81f / 1000.f;
     Vec3 xl = {
-        .x = lsm6dsl_read_component(LSM6DSL_X_L_XL, LSM6DSL_X_H_XL, scale) * mg_to_ms2,
-        .y = lsm6dsl_read_component(LSM6DSL_Y_L_XL, LSM6DSL_Y_H_XL, scale) * mg_to_ms2,
-        .z = lsm6dsl_read_component(LSM6DSL_Z_L_XL, LSM6DSL_Z_H_XL, scale) * mg_to_ms2,
+            .x = lsm6dsl_read_component(LSM6DSL_X_L_XL, LSM6DSL_X_H_XL, scale) * mg_to_ms2,
+            .y = lsm6dsl_read_component(LSM6DSL_Y_L_XL, LSM6DSL_Y_H_XL, scale) * mg_to_ms2,
+            .z = lsm6dsl_read_component(LSM6DSL_Z_L_XL, LSM6DSL_Z_H_XL, scale) * mg_to_ms2,
     };
 
     return xl;
@@ -209,24 +210,24 @@ Vec3 lsm6dsl_read_gyro() {
     switch (fs_g) {
         case 0x00:
             scale = 8.75f;
-        break;
+            break;
         case 0x01:
             scale = 17.5f;
-        break;
+            break;
         case 0x02:
             scale = 35.0f;
-        break;
+            break;
         case 0x03:
             scale = 70.0f;
-        break;
+            break;
         default:
             scale = 1.0f;
     };
 
     Vec3 g = {
-        .x = lsm6dsl_read_component(LSM6DSL_X_L_G, LSM6DSL_X_H_G, scale) / 1000.f,
-        .y = lsm6dsl_read_component(LSM6DSL_Y_L_G, LSM6DSL_Y_H_G, scale) / 1000.f,
-        .z = lsm6dsl_read_component(LSM6DSL_Z_L_G, LSM6DSL_Z_H_G, scale) / 1000.f,
+            .x = lsm6dsl_read_component(LSM6DSL_X_L_G, LSM6DSL_X_H_G, scale) / 1000.f,
+            .y = lsm6dsl_read_component(LSM6DSL_Y_L_G, LSM6DSL_Y_H_G, scale) / 1000.f,
+            .z = lsm6dsl_read_component(LSM6DSL_Z_L_G, LSM6DSL_Z_H_G, scale) / 1000.f,
     };
 
     return g;
@@ -260,14 +261,14 @@ static float lis3mdl_read_component(uint8_t addr_l, uint8_t addr_h, float scale)
     uint8_t l, h;
     HAL_I2C_Mem_Read(&hi2c2, LIS3MDL_ADDR, addr_l, 1, &l, 1, 1);
     HAL_I2C_Mem_Read(&hi2c2, LIS3MDL_ADDR, addr_h, 1, &h, 1, 1);
-    uint32_t uval = ((uint32_t)h << 8) | l;
+    uint32_t uval = ((uint32_t) h << 8) | l;
 
     if (uval & 0x00008000) {
         uval |= 0xFFFF0000;
     }
 
-    int32_t ival = (int32_t)uval;
-    return ((float)ival) * scale;
+    int32_t ival = (int32_t) uval;
+    return ((float) ival) * scale;
 }
 
 Vec3 lis3mdl_read_mag() {
@@ -293,11 +294,10 @@ Vec3 lis3mdl_read_mag() {
     };
 
     Vec3 mag = {
-        .x = lis3mdl_read_component(LIS3MDL_X_L, LIS3MDL_X_H, scale),
-        .y = lis3mdl_read_component(LIS3MDL_Y_L, LIS3MDL_Y_H, scale),
-        .z = lis3mdl_read_component(LIS3MDL_Z_L, LIS3MDL_Z_H, scale),
+            .x = lis3mdl_read_component(LIS3MDL_X_L, LIS3MDL_X_H, scale),
+            .y = lis3mdl_read_component(LIS3MDL_Y_L, LIS3MDL_Y_H, scale),
+            .z = lis3mdl_read_component(LIS3MDL_Z_L, LIS3MDL_Z_H, scale),
     };
 
     return mag;
 }
-
